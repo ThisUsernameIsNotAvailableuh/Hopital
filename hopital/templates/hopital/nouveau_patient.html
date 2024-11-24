@@ -1,0 +1,13 @@
+{% extends "hopital/base.html" %}
+
+{% block title %}Ajouter un Patient{% endblock %}
+
+{% block content %}
+    <h1>Ajouter un nouveau Patient</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+    </form>
+    <a href="{% url 'liste_salles' %}" class="btn btn-secondary">Annuler</a>
+{% endblock %}

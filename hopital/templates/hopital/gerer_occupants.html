@@ -1,0 +1,58 @@
+{% extends "hopital/base.html" %}
+
+{% block title %}Gérer les Occupants - {{ salle.nom }}{% endblock %}
+
+{% block content %}
+    <h1>Gérer les Occupants - {{ salle.nom }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        <h2>Patients</h2>
+        <ul>
+            {% for patient in patients %}
+                <li>
+                    <strong>{{ patient.nom }} {{ patient.prenom }}</strong>
+                    <label>État :
+                        <select name="etat_patient_{{ patient.id }}">
+                            <option value="Bonne santé" {% if patient.etat_de_sante == "Bonne santé" %}selected{% endif %}>Bonne santé</option>
+                            <option value="Décédé" {% if patient.etat_de_sante == "Décédé" %}selected{% endif %}>Décédé</option>
+                            <option value="Hospitalisé" {% if patient.etat_de_sante == "Hospitalisé" %}selected{% endif %}>Hospitalisé</option>
+                            <option value="En opération" {% if patient.etat_de_sante == "En opération" %}selected{% endif %}>En opération</option>
+                            <option value="Repos" {% if patient.etat_de_sante == "Repos" %}selected{% endif %}>Repos</option>
+                            <option value="En réanimation" {% if patient.etat_de_sante == "En réanimation" %}selected{% endif %}>En réanimation</option>
+                        </select>
+                    </label>
+                    <label>Salle :
+                        <select name="salle_patient_{{ patient.id }}">
+                            <option value="">Ne pas changer</option>
+                            {% for autre_salle in salles_disponibles %}
+                                <option value="{{ autre_salle.id }}">{{ autre_salle.nom }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <input type="checkbox" name="supprimer_patient" value="{{ patient.id }}"> Supprimer
+                </li>
+            {% endfor %}
+        </ul>
+
+        <h2>Médecins</h2>
+        <ul>
+            {% for medecin in medecins %}
+                <li>
+                    <strong>Dr. {{ medecin.nom }} {{ medecin.prenom }}</strong>
+                    <label>Salle :
+                        <select name="salle_medecin_{{ medecin.id }}">
+                            <option value="">Ne pas changer</option>
+                            {% for autre_salle in salles_disponibles %}
+                                <option value="{{ autre_salle.id }}">{{ autre_salle.nom }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <input type="checkbox" name="supprimer_medecin" value="{{ medecin.id }}"> Supprimer
+                </li>
+            {% endfor %}
+        </ul>
+
+        <button type="submit" class="btn btn-success">Mettre à jour</button>
+    </form>
+    <a href="{% url 'liste_salles' %}" class="btn btn-secondary">Retour à la liste des salles</a>
+{% endblock %}

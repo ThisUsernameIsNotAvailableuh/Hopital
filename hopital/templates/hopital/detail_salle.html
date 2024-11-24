@@ -1,0 +1,29 @@
+{% extends "hopital/base.html" %}
+
+{% block title %}Détails de la Salle{% endblock %}
+
+{% block content %}
+    <h1>Salle : {{ salle.nom }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        <h2>Patients</h2>
+        <ul>
+            {% for patient in patients %}
+                <li>
+                    {{ patient.nom }} {{ patient.prenom }}
+                    <input type="checkbox" name="patient-{{ patient.id }}" {% if patient.soigne %}checked{% endif %}>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <h2>Médecins</h2>
+        <ul>
+            {% for medecin in medecins %}
+                <li>Dr. {{ medecin.nom }} {{ medecin.prenom }}</li>
+            {% endfor %}
+        </ul>
+
+        <button type="submit" class="btn btn-success">Mettre à jour</button>
+    </form>
+    <a href="{% url 'liste_salles' %}" class="btn btn-primary">Retour aux salles</a>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "hopital/base.html" %}
+
+{% block title %}Statistiques{% endblock %}
+
+{% block content %}
+    <h1>Statistiques</h1>
+    <ul>
+        <li>Nombre de patients : {{ nombre_patients }}</li>
+        <li>Nombre de patients décédés : {{ nombre_morts }}</li>
+        <li>Nombre de patients soignés : {{ nombre_sauve }}</li>
+        <li>Nombre de médecins : {{ nombre_medecins }}</li>
+        <li>Nombre de salles : {{ nombre_salles }}</li>
+    </ul>
+    <a href="{% url 'index' %}" class="btn btn-primary">Retour à l'accueil</a>
+{% endblock %}

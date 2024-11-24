@@ -1,0 +1,26 @@
+{% extends "hopital/base.html" %}
+
+{% block title %}Gérer les Salles{% endblock %}
+
+{% block content %}
+    <h1>Gérer les Salles</h1>    
+    <h2>Ajouter une nouvelle salle</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Créer</button>
+    </form>
+
+    <h2>Liste des Salles</h2>
+    <ul>
+        {% for salle in salles %}
+            <li>
+                {{ salle.nom }} (Capacité : {{ salle.capacite|default:"Non spécifiée" }})
+                <a href="{% url 'gerer_occupants' salle.id %}" class="btn btn-primary btn-sm">Gérer les occupants</a>
+                <a href="{% url 'supprimer_salle' salle.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'index' %}" class="btn btn-primary">Retour à l'accueil</a>
+{% endblock %}
