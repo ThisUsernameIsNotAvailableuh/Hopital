@@ -83,7 +83,6 @@ def gerer_occupants(request, salle_id):
     salles_disponibles = Salle.objects.exclude(id=salle_id)
 
     if request.method == 'POST':
-        messages.success(request, "Formulaire envoyé")
         for patient in patients:
             nouvelle_salle_id = request.POST.get(f'salle_patient_{patient.id}')
             if nouvelle_salle_id:
@@ -101,6 +100,13 @@ def gerer_occupants(request, salle_id):
             if nouveau_etat:
                 patient.etat_de_sante = nouveau_etat
                 patient.save()
+        
+        supprimer_patient = request.POST.getlist('supprimer_patient')
+        supprimer_medecin = request.POST.getlist('supprimer_medecin')
+        Patient.objects.filter(id__in=supprimer_patient).delete()
+        Medecin.objects.filter(id__in=supprimer_medecin).delete()
+
+        messages.success(request, "Formulaire envoyé")
         return redirect('gerer_occupants', salle_id=salle_id)
 
     return render(request, 'hopital/gerer_occupants.html', {
@@ -109,3 +115,19 @@ def gerer_occupants(request, salle_id):
         'medecins': medecins,
         'salles_disponibles': salles_disponibles,
     })
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Patient
+from django.contrib import messages
+
+def supprimer_patient(request, patient_id):
+    patient = get_object_or_404(Patient, id=patient_id)
+    
+    # Vérifiez si vous souhaitez afficher un message d'erreur si le patient est lié à une salle
+    if patient.salle:
+        messages.error(request, "Impossible de supprimer un patient qui est encore dans une salle.")
+    else:
+        patient.delete()
+        messages.success(request, "Patient supprimé avec succès.")
+
+    return redirect('liste_salles')  # Ou toute autre redirection souhaitée
